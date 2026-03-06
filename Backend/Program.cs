@@ -1,4 +1,5 @@
-using Backend.Application.User;
+
+using Backend.modules.user;
 
 var builder = WebApplication.CreateBuilder(args);
 

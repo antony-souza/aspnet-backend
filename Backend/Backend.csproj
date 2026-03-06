@@ -11,8 +11,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Domain\User\" />
-      <Folder Include="Infrastructure\" />
+      <Folder Include="src\common\cache\" />
+      <Folder Include="src\common\queue\" />
+      <Folder Include="src\modules\auth\usecase\" />
+      <Folder Include="src\utils\" />
     </ItemGroup>
 
 </Project>
