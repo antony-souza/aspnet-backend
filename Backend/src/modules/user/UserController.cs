@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Backend.modules.user;
+﻿using Backend.Base;
+using Backend.modules.user;
+using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("users")]
@@ -13,12 +13,27 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet]
-    [Route("/")]
-    public IActionResult FindAll()
+    [HttpPost]
+    public async Task<IActionResult> Create(User user)
     {
-        var data =  _userService.FindAll();
+        var data = await _userService.Create(user);
 
+        if (data == null)
+        {
+            return BadRequest("Already exists");
+        }
+        
+        return Ok(data);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> FindAll([FromQuery] BaseQueryControllerPagination query)
+    {
+        int page = query.Page;
+        int perPage = query.PerPage;
+        
+        var data =  await _userService.FindAll(page, perPage);
+        
         return Ok(data);
     }
 }

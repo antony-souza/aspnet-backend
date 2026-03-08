@@ -1,23 +1,24 @@
-
+using Backend.Common.database;
 using Backend.modules.user;
+using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
+
+Env.Load("../.env");
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
-var app = builder.Build();
 builder.Services.AddControllers();
 builder.Services.AddScoped<UserService>();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+var connectionString = builder.Configuration.GetConnectionString("Default");
 
-app.UseHttpsRedirection();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString)
+);
+
+var app = builder.Build();
+
+//app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
