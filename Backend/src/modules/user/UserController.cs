@@ -20,7 +20,7 @@ public class UserController : ControllerBase
 
         if (data == null)
         {
-            return BadRequest("Already exists");
+            return Conflict("User already exists");
         }
         
         return Ok(data);
