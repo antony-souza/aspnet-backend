@@ -1,6 +1,8 @@
 ﻿using Backend.Base;
 using Backend.modules.user;
+using Backend.src.modules.user.Dto;
 using Microsoft.AspNetCore.Mvc;
+using Sprache;
 
 [ApiController]
 [Route("users")]
@@ -14,16 +16,16 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(User user)
+    public async Task<IActionResult> Create(CreateUserDto user)
     {
-        var data = await _userService.Create(user);
+        var result = await _userService.Create(user);
 
-        if (data == null)
+        if (!result.Succeeded)
         {
-            return Conflict("User already exists");
+            return BadRequest(result.Errors.Select(e => e.Description));
         }
-        
-        return Ok(data);
+
+        return Ok(result);
     }
 
     [HttpGet]
@@ -33,6 +35,20 @@ public class UserController : ControllerBase
         int perPage = query.PerPage;
         
         var data =  await _userService.FindAll(page, perPage);
+        
+        return Ok(data);
+    }
+
+    [HttpDelete]
+    [Route("/{userId}")]
+    public async Task<IActionResult> Delete(string userId)
+    {
+        var data = await _userService.SoftDelete(userId);
+
+        if (!data)
+        {
+            return NotFound("Teste");
+        }
         
         return Ok(data);
     }
