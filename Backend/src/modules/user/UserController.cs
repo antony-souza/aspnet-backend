@@ -1,11 +1,13 @@
 ﻿using Backend.Base;
 using Backend.modules.user;
 using Backend.src.modules.user.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sprache;
 
 [ApiController]
 [Route("users")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
@@ -40,7 +42,7 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("/{userId}")]
+    [Route("{userId}")]
     public async Task<IActionResult> Delete(string userId)
     {
         var data = await _userService.SoftDelete(userId);

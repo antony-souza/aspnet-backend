@@ -9,4 +9,11 @@ public class AppDbContext : IdentityDbContext<User>
         : base(options)
     {
     }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.Entity<User>().HasQueryFilter(user => user.DeletedAt == null);
+    }
 }

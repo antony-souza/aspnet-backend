@@ -64,7 +64,6 @@ public class UserService
         var total = await _context.Users.CountAsync();
 
         var items = await _context.Users
-            .Where(user => user.DeletedAt == null)
             .AsNoTracking()
             .Skip(skip)
             .Take(perPage)
@@ -86,8 +85,6 @@ public class UserService
             .ExecuteUpdateAsync(set =>
                 set.SetProperty(user => user.DeletedAt, DateTime.UtcNow)
             );
-
-        await _context.SaveChangesAsync();
 
         return rows > 0;
     }
