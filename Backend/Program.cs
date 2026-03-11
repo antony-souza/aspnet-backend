@@ -27,7 +27,12 @@ builder.Services
     .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<UserService>();
+builder.Services.Scan(scan => scan
+    .FromAssemblies(typeof(Program).Assembly)
+    .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Service")))
+    .AsSelfWithInterfaces()
+    .WithScopedLifetime()
+);
 
 var app = builder.Build();
 
