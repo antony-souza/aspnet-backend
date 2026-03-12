@@ -18,8 +18,8 @@ namespace Backend.src.modules.organization.entitiy
         public string Slug { get; set; } = string.Empty;
 
         [Column("cnpj")]
-        [MaxLength(14)]
-        public int Cnpj { get; set; }
+        [MaxLength(18)]
+        public string Cnpj { get; set; } = string.Empty;
 
         [Column("created_at")]
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
