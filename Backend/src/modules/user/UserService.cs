@@ -12,7 +12,6 @@ public class UserService
     private readonly AppDbContext _context;
     private readonly UserManager<User> _userManagerContext;
 
-
     public UserService(AppDbContext context, UserManager<User> userManager)
     {
         _context = context;
@@ -42,7 +41,7 @@ public class UserService
             Name = createUserDto.Name,
             UserName = createUserDto.Email,
             Email = createUserDto.Email,
-            Cpf = createUserDto.Cpf,
+            Cpf = createUserDto.Cpf
         };
 
         var result = await _userManagerContext.CreateAsync(user, createUserDto.Password);
@@ -70,7 +69,7 @@ public class UserService
             .Select(user => new UserListDto
             {
                 Id = user.Id,
-                Name = user.UserName,
+                Name = user.Name,
                 Email = user.Email
             })
             .ToListAsync();
@@ -78,7 +77,7 @@ public class UserService
         return new BaseReturnPagination<UserListDto>(page, perPage, total, items);
     }
 
-    public async Task<bool> SoftDelete(string userId)
+    public async Task<bool> SoftDelete(Guid userId)
     {
         var rows = await _context.Users
             .Where(user => user.Id == userId)

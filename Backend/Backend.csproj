@@ -21,6 +21,7 @@
     <ItemGroup>
       <Folder Include="src\common\cache\" />
       <Folder Include="src\common\queue\" />
+      <Folder Include="src\modules\organization\dtos\" />
       <Folder Include="src\utils\" />
     </ItemGroup>
 

@@ -7,7 +7,7 @@ using Sprache;
 
 [ApiController]
 [Route("users")]
-[Authorize]
+//[Authorize]
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
@@ -35,15 +35,15 @@ public class UserController : ControllerBase
     {
         int page = query.Page;
         int perPage = query.PerPage;
-        
-        var data =  await _userService.FindAll(page, perPage);
-        
+
+        var data = await _userService.FindAll(page, perPage);
+
         return Ok(data);
     }
 
     [HttpDelete]
     [Route("{userId}")]
-    public async Task<IActionResult> Delete(string userId)
+    public async Task<IActionResult> Delete(Guid userId)
     {
         var data = await _userService.SoftDelete(userId);
 
@@ -51,7 +51,7 @@ public class UserController : ControllerBase
         {
             return NotFound("Teste");
         }
-        
+
         return Ok(data);
     }
 }

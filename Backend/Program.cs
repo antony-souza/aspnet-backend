@@ -15,7 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 builder.Services
-    .AddIdentity<User, IdentityRole>(options =>
+    .AddIdentity<User, IdentityRole<Guid>>(options =>
     {
         options.Password.RequiredLength = 6;
         options.Password.RequireDigit = false;
