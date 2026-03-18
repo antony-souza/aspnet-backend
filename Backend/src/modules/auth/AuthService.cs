@@ -23,12 +23,13 @@ public class AuthService
             return SignInResult.Failed;
         }
 
-        return await _signInManager.PasswordSignInAsync(
-            createAuthDto.Email,
+        var result = await _signInManager.CheckPasswordSignInAsync(
+            user,
             createAuthDto.Password,
-            false,
             false
          );
+
+        return result;
     }
 }
 

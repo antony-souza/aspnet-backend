@@ -7,7 +7,6 @@ using Sprache;
 
 [ApiController]
 [Route("users")]
-[Authorize]
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
@@ -21,6 +20,20 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Create(CreateUserDto user)
     {
         var result = await _userService.Create(user);
+
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors.Select(e => e.Description));
+        }
+
+        return Ok(result);
+    }
+
+    [HttpPut]
+    [Route("{userId}")]
+    public async Task<IActionResult> Update([FromRoute] Guid userId, UpdateUserDto updateUserDto)
+    {
+        var result = await _userService.Update(userId, updateUserDto);
 
         if (!result.Succeeded)
         {

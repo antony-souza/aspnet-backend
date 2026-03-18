@@ -56,6 +56,44 @@ public class UserService
         return result;
     }
 
+    public async Task<IdentityResult> Update(Guid id, UpdateUserDto updateUserDto)
+    {
+        var existingUser = await _userManagerContext.FindByIdAsync(id.ToString());
+
+        if (existingUser == null)
+        {
+            return IdentityResult.Failed(
+                new IdentityError { Description = "User not found" }
+            );
+        }
+
+        if (!string.IsNullOrEmpty(updateUserDto.Cpf) && updateUserDto.Cpf.Length > 11)
+        {
+            return IdentityResult.Failed(
+                new IdentityError { Description = "CPF number too long" }
+            );
+        }
+
+        if (!string.IsNullOrEmpty(updateUserDto.Name))
+        {
+            existingUser.Name = updateUserDto.Name;
+        }
+
+        if (!string.IsNullOrEmpty(updateUserDto.Email))
+        {
+            existingUser.Email = updateUserDto.Email;
+            existingUser.UserName = updateUserDto.Email;
+        }
+
+        existingUser.Cpf = updateUserDto.Cpf ?? existingUser.Cpf;
+        existingUser.OrganizationId = updateUserDto.OrganizationId ?? existingUser.OrganizationId;
+
+        var result = await _userManagerContext.UpdateAsync(existingUser);
+
+        return result;
+    }
+
+
     public async Task<IBaseReturnPagination<UserListDto>> FindAll(int page, int perPage)
     {
         var skip = (page - 1) * perPage;

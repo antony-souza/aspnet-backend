@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.src.modules.organization
 {
-    [Controller]
+    [ApiController]
     [Route("organization")]
     [Authorize]
     public class OrganizationController : ControllerBase

@@ -25,5 +25,6 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
             .HasForeignKey(user => user.OrganizationId);
 
         builder.Entity<User>().HasQueryFilter(user => user.DeletedAt == null);
+        builder.Entity<Organization>().HasQueryFilter(user => user.DeletedAt == null);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Backend.Common.database;
 using Backend.Interfaces;
-using Backend.modules.user.Dto;
 using Backend.src.modules.organization.dtos;
 using Backend.src.modules.organization.entitiy;
 using Microsoft.EntityFrameworkCore;
