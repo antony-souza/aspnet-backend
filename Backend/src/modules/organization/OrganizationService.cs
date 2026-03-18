@@ -87,7 +87,7 @@ namespace Backend.src.modules.organization
                     Id = organization.Id,
                     Name = organization.Name,
                     Cnpj = organization.Cnpj,
-                    Users = organization.Users!.Select(u => new UserListDto
+                    Users = organization.Users.Select(u => new UserListDto
                     {
                         Id = u.Id,
                         Name = u.Name,

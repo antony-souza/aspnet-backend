@@ -4,6 +4,8 @@ using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
+using Backend.src.modules.role.entity;
+
 DotNetEnv.Env.Load("../.env");
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 builder.Services
-    .AddIdentity<User, IdentityRole<Guid>>(options =>
+    .AddIdentity<User, Role>(options =>
     {
         options.Password.RequiredLength = 6;
         options.Password.RequireDigit = false;
@@ -23,6 +25,7 @@ builder.Services
         options.Password.RequireUppercase = false;
         options.Password.RequireNonAlphanumeric = false;
     })
+    .AddRoles<Role>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
