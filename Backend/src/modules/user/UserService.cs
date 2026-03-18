@@ -1,6 +1,7 @@
 ﻿using Backend.Common.database;
 using Backend.Interfaces;
 using Backend.modules.user.Dto;
+using Backend.src.modules.role.entity;
 using Backend.src.modules.user.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,17 +10,25 @@ namespace Backend.modules.user;
 
 public class UserService
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext    _context;
     private readonly UserManager<User> _userManagerContext;
+    private readonly RoleManager<Role> _roleManagerContext;
 
-    public UserService(AppDbContext context, UserManager<User> userManager)
+    public UserService(AppDbContext context, UserManager<User> userManager, RoleManager<Role> roleManager)
     {
         _context = context;
         _userManagerContext = userManager;
+        _roleManagerContext = roleManager;
     }
 
     public async Task<IdentityResult> Create(CreateUserDto createUserDto)
     {
+        if (!createUserDto.RoleId.HasValue)
+        {
+            return IdentityResult.Failed(
+                new IdentityError { Description = "RoleId not found" }
+            );
+        }
         var existingUser = await _userManagerContext.FindByEmailAsync(createUserDto.Email);
 
         if (existingUser != null)
@@ -29,7 +38,7 @@ public class UserService
             );
         }
 
-        if (createUserDto.Cpf.Length > 11)
+        if (!string.IsNullOrEmpty(createUserDto.Cpf) && createUserDto.Cpf.Length > 11)
         {
             return IdentityResult.Failed(
                 new IdentityError { Description = "CPF number too long " }
@@ -51,6 +60,25 @@ public class UserService
             return IdentityResult.Failed(
                 new IdentityError { Description = "Creation failure" }
             );
+        }
+
+        if (createUserDto.RoleId.HasValue)
+        {
+            var role = await _roleManagerContext.FindByIdAsync(createUserDto.RoleId.Value.ToString());
+            if (role != null)
+            {
+                var roleResult = await _userManagerContext.AddToRoleAsync(user, role.Name!);
+                if (!roleResult.Succeeded)
+                {
+                    return roleResult;
+                }
+            }
+            else
+            {
+                return IdentityResult.Failed(
+                    new IdentityError { Description = "Role not found in database" }
+                );
+            }
         }
 
         return result;
@@ -90,6 +118,20 @@ public class UserService
 
         var result = await _userManagerContext.UpdateAsync(existingUser);
 
+        if (result.Succeeded && updateUserDto.RoleId.HasValue)
+        {
+            var role = await _roleManagerContext.FindByIdAsync(updateUserDto.RoleId.Value.ToString());
+            if (role != null)
+            {
+                var existingRoles = await _userManagerContext.GetRolesAsync(existingUser);
+                if (!existingRoles.Contains(role.Name!))
+                {
+                    await _userManagerContext.RemoveFromRolesAsync(existingUser, existingRoles);
+                    await _userManagerContext.AddToRoleAsync(existingUser, role.Name!);
+                }
+            }
+        }
+
         return result;
     }
 
@@ -108,7 +150,11 @@ public class UserService
             {
                 Id = user.Id,
                 Name = user.Name,
-                Email = user.Email
+                Email = user.Email,
+                Role = _context.UserRoles
+                    .Where(userRole => userRole.UserId == user.Id)
+                    .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.CustomName)
+                    .FirstOrDefault()
             })
             .ToListAsync();
 

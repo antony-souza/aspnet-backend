@@ -1,10 +1,7 @@
 using Backend.Common.database;
-using Backend.modules.user;
-using DotNetEnv;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-
 using Backend.src.modules.role.entity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 DotNetEnv.Env.Load("../.env");
 

@@ -6,5 +6,6 @@
         public string? Email { get; set; }
         public string? Cpf { get; set; }
         public Guid? OrganizationId { get; set; }
+        public Guid? RoleId { get; set; }
     }
 }

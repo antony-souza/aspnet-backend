@@ -25,7 +25,7 @@ public class RoleService
             return IdentityResult.Failed(new IdentityError { Description = "Role already exists" });
         }
 
-        var identityRole = new Role { Name = createRoleDto.Name };
+        var identityRole = new Role { Name = createRoleDto.Name, CustomName = createRoleDto.CustomName };
         return await _roleManager.CreateAsync(identityRole);
     }
 
@@ -39,6 +39,7 @@ public class RoleService
         }
 
         role.Name = updateRoleDto.Name;
+        role.CustomName = updateRoleDto.CustomName;
         role.UpdatedAt = DateTime.UtcNow;
         return await _roleManager.UpdateAsync(role);
     }
@@ -54,10 +55,12 @@ public class RoleService
             .AsNoTracking()
             .Skip(skip)
             .Take(perPage)
-            .Select(r => new RoleListDto
+            .Select(role => new RoleListDto
             {
-                Id = r.Id,
-                Name = r.Name!
+                Id = role.Id,
+                Name = role.CustomName,
+                Slug = role.Name
+
             })
             .ToListAsync();
 

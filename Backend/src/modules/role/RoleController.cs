@@ -17,6 +17,7 @@ public class RoleController : ControllerBase
         _roleService = roleService;
     }
 
+    [Authorize(Roles = RolesNamesUtils.Admin)]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateRoleDto createRoleDto)
     {
@@ -41,6 +42,7 @@ public class RoleController : ControllerBase
         return Ok(data);
     }
 
+    [Authorize(Roles = RolesNamesUtils.Admin)]
     [HttpPut]
     [Route("{id}")]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRoleDto updateRoleDto)
@@ -54,7 +56,8 @@ public class RoleController : ControllerBase
 
         return Ok();
     }
-
+    
+    [Authorize(Roles = RolesNamesUtils.Admin)]
     [HttpDelete]
     [Route("{id}")]
     public async Task<IActionResult> Delete([FromRoute] Guid id)

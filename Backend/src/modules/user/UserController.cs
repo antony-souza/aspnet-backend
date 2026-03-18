@@ -1,5 +1,6 @@
 ﻿using Backend.Base;
 using Backend.modules.user;
+using Backend.src.modules.role;
 using Backend.src.modules.user.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,7 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
+    [Authorize(Roles = RolesNamesUtils.Admin)]
     [HttpPost]
     public async Task<IActionResult> Create(CreateUserDto user)
     {
@@ -30,6 +32,7 @@ public class UserController : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(Roles = RolesNamesUtils.Admin + "," + RolesNamesUtils.Director)]
     [HttpPut]
     [Route("{userId}")]
     public async Task<IActionResult> Update([FromRoute] Guid userId, UpdateUserDto updateUserDto)
@@ -55,6 +58,7 @@ public class UserController : ControllerBase
         return Ok(data);
     }
 
+    [Authorize(Roles = RolesNamesUtils.Admin + "," + RolesNamesUtils.Director)]
     [HttpDelete]
     [Route("{userId}")]
     public async Task<IActionResult> Delete(Guid userId)
