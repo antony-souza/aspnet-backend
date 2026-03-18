@@ -1,5 +1,6 @@
 ﻿using Backend.Common.database;
 using Backend.Interfaces;
+using Backend.modules.user.Dto;
 using Backend.src.modules.organization.dtos;
 using Backend.src.modules.organization.entitiy;
 using Microsoft.EntityFrameworkCore;
@@ -85,7 +86,13 @@ namespace Backend.src.modules.organization
                 {
                     Id = organization.Id,
                     Name = organization.Name,
-                    Cnpj = organization.Cnpj
+                    Cnpj = organization.Cnpj,
+                    Users = organization.Users!.Select(u => new UserListDto
+                    {
+                        Id = u.Id,
+                        Name = u.Name,
+                        Email = u.Email!
+                    }).ToList()
                 })
                 .ToListAsync();
 
