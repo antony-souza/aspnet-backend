@@ -23,9 +23,10 @@ public class AuthService
             return SignInResult.Failed;
         }
 
-        var result = await _signInManager.CheckPasswordSignInAsync(
-            user,
+        var result = await _signInManager.PasswordSignInAsync(
+            user.UserName!,
             createAuthDto.Password,
+            false,
             false
          );
 

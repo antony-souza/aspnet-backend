@@ -1,4 +1,5 @@
 ﻿using Backend.src.modules.auth.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.src.modules.auth

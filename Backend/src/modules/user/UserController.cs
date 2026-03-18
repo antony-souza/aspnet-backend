@@ -7,6 +7,7 @@ using Sprache;
 
 [ApiController]
 [Route("users")]
+[Authorize]
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
