@@ -42,5 +42,33 @@ namespace Backend.src.modules.organization
 
             return Ok(data);
         }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateOrganizationDto updateOrganizationDto)
+        {
+            var result = await _organizationService.Update(id, updateOrganizationDto);
+
+            if (result == null)
+            {
+                return BadRequest("Organization not found or invalid data");
+            }
+
+            return Ok(result);
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
+        {
+            var success = await _organizationService.SoftDelete(id);
+
+            if (!success)
+            {
+                return NotFound("Organization not found");
+            }
+
+            return NoContent();
+        }
     }
 }

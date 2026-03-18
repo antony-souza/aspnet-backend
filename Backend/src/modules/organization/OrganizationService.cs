@@ -38,6 +38,39 @@ namespace Backend.src.modules.organization
             return organization;
         }
 
+        public async Task<Organization> Update(Guid id, UpdateOrganizationDto updateDto)
+        {
+            var organization = await _context.Organizations.FirstOrDefaultAsync(org => org.Id == id);
+
+            if (organization == null)
+            {
+                return null;
+            }
+
+            if (!string.IsNullOrEmpty(updateDto.Name))
+                organization.Name = updateDto.Name;
+
+            if (!string.IsNullOrEmpty(updateDto.Slug))
+            {
+                var existingSlug = await _context.Organizations.AnyAsync(org => org.Slug == updateDto.Slug && org.Id != id);
+
+                if (existingSlug)
+                {
+                    return null;
+                }
+                organization.Slug = updateDto.Slug;
+            }
+
+            if (!string.IsNullOrEmpty(updateDto.Cnpj))
+                organization.Cnpj = updateDto.Cnpj;
+
+            organization.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return organization;
+        }
+
         public async Task<IBaseReturnPagination<ListOrganizationDto>> FindAll(int page, int perPage)
         {
             var skip = (page - 1) * perPage;
@@ -59,12 +92,12 @@ namespace Backend.src.modules.organization
             return new BaseReturnPagination<ListOrganizationDto>(page, perPage, total, items);
         }
 
-        public async Task<bool> SoftDelete(Guid userId)
+        public async Task<bool> SoftDelete(Guid id)
         {
-            var rows = await _context.Users
-                .Where(user => user.Id == userId)
+            var rows = await _context.Organizations
+                .Where(org => org.Id == id)
                 .ExecuteUpdateAsync(set =>
-                    set.SetProperty(user => user.DeletedAt, DateTime.UtcNow)
+                    set.SetProperty(org => org.DeletedAt, DateTime.UtcNow)
                 );
 
             return rows > 0;
